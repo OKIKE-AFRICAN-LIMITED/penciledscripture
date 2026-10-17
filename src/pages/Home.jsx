@@ -17,7 +17,7 @@ export default function Home() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Animate badge, subtitle, and CTA buttons in sequence
+      // Hero Header Timeline
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       tl.fromTo('.hero-badge', 
@@ -35,25 +35,27 @@ export default function Home() {
         "-=0.4"
       );
 
-      // ScrollTrigger line expansion
+      // ScrollTrigger line expansion with reversible toggle
       if (dividerRef.current) {
         gsap.fromTo(dividerRef.current,
           { scaleX: 0, transformOrigin: 'left center' },
           {
             scaleX: 1,
-            duration: 1.2,
+            duration: 1.0,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: dividerRef.current,
               start: 'top 90%',
+              end: 'bottom 10%',
+              toggleActions: 'play reverse play reverse',
             }
           }
         );
       }
 
-      // Staggered scroll trigger for principles cards
+      // Reversible ScrollTrigger for principles cards
       gsap.fromTo('.principle-item',
-        { opacity: 0, y: 35 },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
@@ -62,14 +64,16 @@ export default function Home() {
           ease: 'power3.out',
           scrollTrigger: {
             trigger: '.principles-container',
-            start: 'top 80%',
+            start: 'top 82%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
           }
         }
       );
 
-      // Staggered scroll trigger for service teaser cards
+      // Reversible ScrollTrigger for service teaser cards
       gsap.fromTo('.teaser-card',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 35 },
         {
           opacity: 1,
           y: 0,
@@ -78,7 +82,43 @@ export default function Home() {
           ease: 'power3.out',
           scrollTrigger: {
             trigger: '.teasers-grid',
-            start: 'top 80%',
+            start: 'top 82%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          }
+        }
+      );
+
+      // Reversible ScrollTrigger for featured title
+      gsap.fromTo('.featured-block',
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.featured-block',
+            start: 'top 82%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          }
+        }
+      );
+
+      // Reversible ScrollTrigger for bottom callout
+      gsap.fromTo('.home-callout',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.home-callout',
+            start: 'top 85%',
+            end: 'bottom 10%',
+            toggleActions: 'play reverse play reverse',
           }
         }
       );
@@ -123,7 +163,7 @@ export default function Home() {
 
           {/* Animated Calligraphic Pen Line */}
           <div style={{ width: '260px', marginBottom: '2.5rem' }}>
-            <InkStrokeLine delay={0.6} />
+            <InkStrokeLine delay={0.6} triggerOnScroll={false} />
           </div>
 
           <p 
@@ -152,7 +192,7 @@ export default function Home() {
 
         </div>
 
-        {/* Animated Hairline Divider */}
+        {/* Animated Hairline Divider with Reversible ScrollTrigger */}
         <div 
           ref={dividerRef}
           style={{ 
@@ -291,8 +331,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Featured Release Teaser with Interactive 3D Card */}
+        {/* Featured Release Teaser with Reversible ScrollTrigger */}
         <div 
+          className="featured-block"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
@@ -348,8 +389,9 @@ export default function Home() {
           </InteractiveCard>
         </div>
 
-        {/* Bottom Uncluttered Callout */}
+        {/* Bottom Uncluttered Callout with Reversible ScrollTrigger */}
         <div 
+          className="home-callout"
           style={{
             textAlign: 'center',
             maxWidth: '680px',

@@ -24,10 +24,44 @@ export default function Releases() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Reversible ScrollTrigger on each book card
+      const cards = gsap.utils.toArray('.catalog-book-card');
+      cards.forEach((card) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: 35, scale: 0.98 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.7,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 88%',
+              end: 'bottom 12%',
+              toggleActions: 'play reverse play reverse',
+            }
+          }
+        );
+      });
+
+      // Bottom callout
       gsap.fromTo(
-        '.catalog-book-card',
-        { opacity: 0, y: 30, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.08, ease: 'power3.out' }
+        '.releases-callout',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.releases-callout',
+            start: 'top 90%',
+            end: 'bottom 10%',
+            toggleActions: 'play reverse play reverse',
+          }
+        }
       );
     }, pageRef);
 
@@ -59,7 +93,7 @@ export default function Releases() {
           </AnimatedText>
 
           <div style={{ width: '220px', marginBottom: '1.75rem' }}>
-            <InkStrokeLine delay={0.5} />
+            <InkStrokeLine delay={0.5} triggerOnScroll={false} />
           </div>
 
           <p className="page-description">
@@ -101,7 +135,7 @@ export default function Releases() {
           })}
         </div>
 
-        {/* Book Grid with 3D Tilt Cards */}
+        {/* Book Grid with Reversible ScrollTrigger Cards */}
         <div 
           style={{
             display: 'grid',
@@ -243,8 +277,9 @@ export default function Releases() {
           }}
         />
 
-        {/* Bottom Banner */}
+        {/* Bottom Banner with Reversible ScrollTrigger */}
         <div 
+          className="releases-callout"
           style={{
             borderTop: '1px solid var(--border-light)',
             paddingTop: '4.5rem',

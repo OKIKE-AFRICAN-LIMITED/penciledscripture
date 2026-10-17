@@ -14,15 +14,29 @@ export default function About() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Reversible ScrollTrigger for story text
       gsap.fromTo(
         '.about-text-block',
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.9, stagger: 0.15, ease: 'power3.out' }
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.8, 
+          stagger: 0.12, 
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.about-story-container',
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          }
+        }
       );
 
+      // Reversible ScrollTrigger for pillar cards
       gsap.fromTo(
         '.pillar-card',
-        { opacity: 0, x: -20 },
+        { opacity: 0, x: -25 },
         {
           opacity: 1,
           x: 0,
@@ -32,6 +46,26 @@ export default function About() {
           scrollTrigger: {
             trigger: '.pillars-list',
             start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          }
+        }
+      );
+
+      // Reversible bottom callout
+      gsap.fromTo(
+        '.about-callout',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.about-callout',
+            start: 'top 88%',
+            end: 'bottom 10%',
+            toggleActions: 'play reverse play reverse',
           }
         }
       );
@@ -65,7 +99,7 @@ export default function About() {
           </AnimatedText>
 
           <div style={{ width: '220px', marginBottom: '1.75rem' }}>
-            <InkStrokeLine delay={0.5} />
+            <InkStrokeLine delay={0.5} triggerOnScroll={false} />
           </div>
 
           <p className="page-description">
@@ -75,6 +109,7 @@ export default function About() {
 
         {/* Narrative & Visual Section */}
         <div 
+          className="about-story-container"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
@@ -97,7 +132,7 @@ export default function About() {
               Whether your work is an inspiring spiritual text, an academic inquiry, a timeless novel, or a personal legacy memoir, our publishing framework is designed to elevate your voice for a global audience.
             </p>
 
-            {/* Core Values List */}
+            {/* Core Values List with Reversible ScrollTrigger */}
             <div className="pillars-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '3rem' }}>
               <div className="pillar-card" style={{ borderLeft: '3px solid var(--brand-blue)', paddingLeft: '1.5rem' }}>
                 <h4 style={{ fontSize: '1.1rem', color: 'var(--ink-900)', marginBottom: '0.35rem' }}>
@@ -180,8 +215,9 @@ export default function About() {
 
         </div>
 
-        {/* Bottom Callout */}
+        {/* Bottom Callout with Reversible ScrollTrigger */}
         <div 
+          className="about-callout"
           style={{
             borderTop: '1px solid var(--border-light)',
             paddingTop: '4.5rem',

@@ -9,7 +9,7 @@ export default function InkStrokeLine({
   height = '14px', 
   color = 'var(--brand-blue)', 
   delay = 0.3,
-  triggerOnScroll = false 
+  triggerOnScroll = true 
 }) {
   const pathRef = useRef(null);
   const svgRef = useRef(null);
@@ -20,7 +20,6 @@ export default function InkStrokeLine({
     const path = pathRef.current;
     const length = path.getTotalLength();
 
-    // Set initial dasharray and offset
     gsap.set(path, {
       strokeDasharray: length,
       strokeDashoffset: length,
@@ -30,17 +29,19 @@ export default function InkStrokeLine({
     if (triggerOnScroll) {
       gsap.to(path, {
         strokeDashoffset: 0,
-        duration: 1.4,
+        duration: 1.2,
         ease: 'power3.inOut',
         scrollTrigger: {
           trigger: svgRef.current,
-          start: 'top 85%',
+          start: 'top 88%',
+          end: 'bottom 5%',
+          toggleActions: 'play reverse play reverse',
         }
       });
     } else {
       gsap.to(path, {
         strokeDashoffset: 0,
-        duration: 1.4,
+        duration: 1.2,
         delay: delay,
         ease: 'power3.inOut',
       });

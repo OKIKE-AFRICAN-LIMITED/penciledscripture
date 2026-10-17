@@ -1,5 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function AnimatedText({ 
   children, 
@@ -7,8 +10,9 @@ export default function AnimatedText({
   className = '', 
   style = {}, 
   delay = 0.1,
-  duration = 1.0,
-  stagger = 0.08
+  duration = 0.9,
+  stagger = 0.08,
+  triggerOnScroll = false
 }) {
   const containerRef = useRef(null);
   const Component = as;
@@ -19,29 +23,52 @@ export default function AnimatedText({
     const lines = containerRef.current.querySelectorAll('.masked-line-inner');
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        lines,
-        {
-          yPercent: 120,
-          rotate: 2,
-          opacity: 0,
-        },
-        {
-          yPercent: 0,
-          rotate: 0,
-          opacity: 1,
-          duration: duration,
-          stagger: stagger,
-          delay: delay,
-          ease: 'power4.out',
-        }
-      );
+      const animConfig = {
+        yPercent: 0,
+        rotate: 0,
+        opacity: 1,
+        duration: duration,
+        stagger: stagger,
+        ease: 'power3.out',
+      };
+
+      if (triggerOnScroll) {
+        gsap.fromTo(
+          lines,
+          {
+            yPercent: 120,
+            rotate: 2,
+            opacity: 0,
+          },
+          {
+            ...animConfig,
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top 88%',
+              end: 'bottom 10%',
+              toggleActions: 'play reverse play reverse',
+            }
+          }
+        );
+      } else {
+        gsap.fromTo(
+          lines,
+          {
+            yPercent: 120,
+            rotate: 2,
+            opacity: 0,
+          },
+          {
+            ...animConfig,
+            delay: delay,
+          }
+        );
+      }
     }, containerRef);
 
     return () => ctx.revert();
-  }, [delay, duration, stagger]);
+  }, [delay, duration, stagger, triggerOnScroll]);
 
-  // If children is a string, split by newline or keep intact
   const text = typeof children === 'string' ? children : '';
 
   return (

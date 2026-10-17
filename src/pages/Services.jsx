@@ -15,18 +15,42 @@ export default function Services() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Reversible ScrollTrigger on each individual service card
+      const cards = gsap.utils.toArray('.service-entry-card');
+      cards.forEach((card) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: 40, scale: 0.98 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.75,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 88%',
+              end: 'bottom 12%',
+              toggleActions: 'play reverse play reverse',
+            }
+          }
+        );
+      });
+
+      // Bottom callout reversible
       gsap.fromTo(
-        '.service-entry-card',
-        { opacity: 0, y: 35 },
+        '.services-callout',
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
           duration: 0.7,
-          stagger: 0.1,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: '.services-stack',
-            start: 'top 80%',
+            trigger: '.services-callout',
+            start: 'top 90%',
+            end: 'bottom 10%',
+            toggleActions: 'play reverse play reverse',
           }
         }
       );
@@ -60,7 +84,7 @@ export default function Services() {
           </AnimatedText>
 
           <div style={{ width: '240px', marginBottom: '1.75rem' }}>
-            <InkStrokeLine delay={0.5} />
+            <InkStrokeLine delay={0.5} triggerOnScroll={false} />
           </div>
 
           <p className="page-description">
@@ -68,7 +92,7 @@ export default function Services() {
           </p>
         </div>
 
-        {/* 8 Services Clean Uncluttered List with Interactive Cards */}
+        {/* 8 Services Clean Uncluttered List with Reversible ScrollTrigger */}
         <div className="services-stack" style={{ display: 'flex', flexDirection: 'column', gap: '3rem', marginBottom: '6rem' }}>
           {SERVICES_DATA.map((service) => (
             <InteractiveCard 
@@ -189,6 +213,7 @@ export default function Services() {
 
         {/* Bottom Contact Callout */}
         <div 
+          className="services-callout"
           style={{
             borderTop: '1px solid var(--border-light)',
             paddingTop: '4.5rem',

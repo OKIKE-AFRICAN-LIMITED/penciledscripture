@@ -6,6 +6,9 @@ import AnimatedText from '../components/AnimatedText';
 import InkStrokeLine from '../components/InkStrokeLine';
 import InteractiveCard from '../components/InteractiveCard';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const [searchParams] = useSearchParams();
@@ -39,10 +42,41 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Reversible ScrollTrigger on contact cards
       gsap.fromTo(
-        '.contact-fade',
-        { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out' }
+        '.contact-card-anim',
+        { opacity: 0, y: 30 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.7, 
+          stagger: 0.12, 
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.contact-grid',
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          }
+        }
+      );
+
+      // Reversible ScrollTrigger on the form container
+      gsap.fromTo(
+        '.form-container-anim',
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.form-container-anim',
+            start: 'top 88%',
+            end: 'bottom 12%',
+            toggleActions: 'play reverse play reverse',
+          }
+        }
       );
     }, pageRef);
 
@@ -97,7 +131,7 @@ export default function Contact() {
           </AnimatedText>
 
           <div style={{ width: '220px', marginBottom: '1.75rem' }}>
-            <InkStrokeLine delay={0.5} />
+            <InkStrokeLine delay={0.5} triggerOnScroll={false} />
           </div>
 
           <p className="page-description">
@@ -107,6 +141,7 @@ export default function Contact() {
 
         {/* Dual Column Layout (Uncluttered & Spacious) */}
         <div 
+          className="contact-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
@@ -116,17 +151,17 @@ export default function Contact() {
         >
           {/* Left Column: Direct Imprint Details */}
           <div>
-            <h2 className="contact-fade" style={{ fontSize: '1.85rem', color: 'var(--ink-900)', marginBottom: '1.25rem' }}>
+            <h2 className="contact-card-anim" style={{ fontSize: '1.85rem', color: 'var(--ink-900)', marginBottom: '1.25rem' }}>
               Publishing House Office
             </h2>
-            <p className="contact-fade" style={{ fontSize: '1.02rem', color: 'var(--ink-700)', lineHeight: '1.8', marginBottom: '2.5rem' }}>
+            <p className="contact-card-anim" style={{ fontSize: '1.02rem', color: 'var(--ink-700)', lineHeight: '1.8', marginBottom: '2.5rem' }}>
               We welcome submissions from established authors, debut writers, scholars, and institutions. Every transmission is held under strict editorial confidentiality.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '3rem' }}>
               
               <InteractiveCard 
-                className="contact-fade"
+                className="contact-card-anim"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
@@ -154,7 +189,7 @@ export default function Contact() {
               </InteractiveCard>
 
               <InteractiveCard 
-                className="contact-fade"
+                className="contact-card-anim"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
@@ -182,7 +217,7 @@ export default function Contact() {
               </InteractiveCard>
 
               <InteractiveCard 
-                className="contact-fade"
+                className="contact-card-anim"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
@@ -210,7 +245,7 @@ export default function Contact() {
 
             {/* Author Guarantee Note */}
             <div 
-              className="contact-fade"
+              className="contact-card-anim"
               style={{
                 padding: '1.75rem',
                 backgroundColor: 'var(--brand-blue-subtle)',
@@ -233,9 +268,9 @@ export default function Contact() {
 
           </div>
 
-          {/* Right Column: Submission Form */}
+          {/* Right Column: Submission Form with Reversible ScrollTrigger */}
           <div 
-            className="contact-fade"
+            className="form-container-anim"
             style={{
               backgroundColor: 'var(--paper-cream)',
               border: '1px solid var(--border-light)',
