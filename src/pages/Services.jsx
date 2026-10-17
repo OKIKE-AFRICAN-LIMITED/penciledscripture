@@ -1,8 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { SERVICES_DATA } from '../data/services';
+import AnimatedText from '../components/AnimatedText';
+import InkStrokeLine from '../components/InkStrokeLine';
+import InteractiveCard from '../components/InteractiveCard';
 import { Layers, Check, Clock, ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Services() {
   const pageRef = useRef(null);
@@ -10,9 +16,19 @@ export default function Services() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        '.service-card-item',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out' }
+        '.service-entry-card',
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.services-stack',
+            start: 'top 80%',
+          }
+        }
       );
     }, pageRef);
 
@@ -29,35 +45,48 @@ export default function Services() {
             <Layers size={14} />
             <span>Publishing Capabilities</span>
           </div>
-          <h1 className="page-title">
-            Our 8 Professional Services
-          </h1>
+
+          <AnimatedText
+            as="h1"
+            duration={1.0}
+            style={{
+              fontSize: 'clamp(2.6rem, 4.5vw, 3.8rem)',
+              color: 'var(--ink-900)',
+              marginBottom: '1rem',
+              lineHeight: 1.12
+            }}
+          >
+            {"Our 8 Professional\nPublishing Services"}
+          </AnimatedText>
+
+          <div style={{ width: '240px', marginBottom: '1.75rem' }}>
+            <InkStrokeLine delay={0.5} />
+          </div>
+
           <p className="page-description">
             From developmental ghostwriting to global distribution and marketing campaigns. Every phase is managed with meticulous editorial care.
           </p>
         </div>
 
-        {/* 8 Services Clean Uncluttered List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', marginBottom: '6rem' }}>
+        {/* 8 Services Clean Uncluttered List with Interactive Cards */}
+        <div className="services-stack" style={{ display: 'flex', flexDirection: 'column', gap: '3rem', marginBottom: '6rem' }}>
           {SERVICES_DATA.map((service) => (
-            <article 
+            <InteractiveCard 
               key={service.id}
-              className="service-card-item"
+              className="service-entry-card"
               style={{
                 backgroundColor: 'var(--paper-cream)',
                 border: '1px solid var(--border-light)',
                 borderRadius: 'var(--radius-md)',
-                padding: '3rem 2.5rem',
-                transition: 'border-color 0.25s ease',
+                padding: '3.5rem 3rem',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--brand-blue-border)')}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-light)')}
             >
               <div 
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                  gap: '3rem',
+                  gap: '3.5rem',
                   alignItems: 'start'
                 }}
               >
@@ -67,7 +96,7 @@ export default function Services() {
                     <span 
                       style={{ 
                         fontFamily: 'var(--font-serif)', 
-                        fontSize: '1.4rem', 
+                        fontSize: '1.5rem', 
                         fontWeight: 700, 
                         color: 'var(--brand-blue)' 
                       }}
@@ -81,22 +110,23 @@ export default function Services() {
 
                   <h2 
                     style={{ 
-                      fontSize: '1.85rem', 
+                      fontSize: '2rem', 
                       color: 'var(--ink-900)', 
-                      marginBottom: '1rem',
-                      fontFamily: 'var(--font-serif)'
+                      marginBottom: '1.25rem',
+                      fontFamily: 'var(--font-serif)',
+                      lineHeight: '1.2'
                     }}
                   >
                     {service.title}
                   </h2>
 
-                  <p style={{ fontSize: '1.02rem', color: 'var(--ink-700)', lineHeight: '1.8', marginBottom: '1.5rem' }}>
+                  <p style={{ fontSize: '1.05rem', color: 'var(--ink-700)', lineHeight: '1.8', marginBottom: '1.75rem' }}>
                     {service.fullDesc}
                   </p>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ink-500)', fontSize: '0.88rem' }}>
-                    <Clock size={16} style={{ color: 'var(--brand-blue)' }} />
-                    <span>Estimated Turnaround: <strong>{service.timeline}</strong></span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--ink-500)', fontSize: '0.9rem' }}>
+                    <Clock size={17} style={{ color: 'var(--brand-blue)' }} />
+                    <span>Estimated Turnaround: <strong style={{ color: 'var(--ink-900)' }}>{service.timeline}</strong></span>
                   </div>
                 </div>
 
@@ -106,19 +136,20 @@ export default function Services() {
                     backgroundColor: 'var(--paper-white)',
                     border: '1px solid var(--border-light)',
                     borderRadius: 'var(--radius-sm)',
-                    padding: '2rem',
+                    padding: '2.25rem',
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
                   }}
                 >
-                  <div style={{ marginBottom: '1.75rem' }}>
-                    <h4 style={{ fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-400)', fontWeight: 700, marginBottom: '1rem' }}>
+                  <div style={{ marginBottom: '2rem' }}>
+                    <h4 style={{ fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-400)', fontWeight: 700, marginBottom: '1.25rem' }}>
                       Scope & Included Deliverables
                     </h4>
-                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                       {service.deliverables.map((item, idx) => (
-                        <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', fontSize: '0.92rem', color: 'var(--ink-800)' }}>
+                        <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem', fontSize: '0.94rem', color: 'var(--ink-800)' }}>
                           <div 
                             style={{ 
                               marginTop: '0.2rem', 
@@ -144,7 +175,7 @@ export default function Services() {
                   <Link
                     to={`/contact?service=${encodeURIComponent(service.title)}`}
                     className="btn btn-primary"
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', padding: '0.95rem' }}
                   >
                     <span>Inquire for This Service</span>
                     <ArrowUpRight size={15} />
@@ -152,7 +183,7 @@ export default function Services() {
                 </div>
 
               </div>
-            </article>
+            </InteractiveCard>
           ))}
         </div>
 
@@ -166,7 +197,7 @@ export default function Services() {
             margin: '0 auto'
           }}
         >
-          <h3 style={{ fontSize: '1.9rem', color: 'var(--ink-900)', marginBottom: '1rem' }}>
+          <h3 style={{ fontSize: '2rem', color: 'var(--ink-900)', marginBottom: '1rem' }}>
             Uncertain which service best matches your project?
           </h3>
           <p style={{ color: 'var(--ink-500)', fontSize: '1.05rem', marginBottom: '2rem', lineHeight: '1.7' }}>

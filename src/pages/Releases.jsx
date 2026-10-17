@@ -2,8 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { RELEASES_DATA } from '../data/releases';
 import BookModal from '../components/BookModal';
+import AnimatedText from '../components/AnimatedText';
+import InkStrokeLine from '../components/InkStrokeLine';
+import InteractiveCard from '../components/InteractiveCard';
 import { BookOpen, Eye, ArrowUpRight } from 'lucide-react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Releases() {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -19,9 +25,9 @@ export default function Releases() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        '.release-card',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out' }
+        '.catalog-book-card',
+        { opacity: 0, y: 30, scale: 0.98 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.08, ease: 'power3.out' }
       );
     }, pageRef);
 
@@ -38,9 +44,24 @@ export default function Releases() {
             <BookOpen size={14} />
             <span>Publications & Imprint Catalog</span>
           </div>
-          <h1 className="page-title">
-            Latest Releases
-          </h1>
+
+          <AnimatedText
+            as="h1"
+            duration={1.0}
+            style={{
+              fontSize: 'clamp(2.6rem, 4.5vw, 3.8rem)',
+              color: 'var(--ink-900)',
+              marginBottom: '1rem',
+              lineHeight: 1.12
+            }}
+          >
+            {"Latest Imprint\nReleases & Works"}
+          </AnimatedText>
+
+          <div style={{ width: '220px', marginBottom: '1.75rem' }}>
+            <InkStrokeLine delay={0.5} />
+          </div>
+
           <p className="page-description">
             Explore our curated catalog of published works spanning theological contemplation, literary prose, cultural philosophy, and academic monographs.
           </p>
@@ -62,7 +83,7 @@ export default function Releases() {
                 key={genre}
                 onClick={() => setActiveFilter(genre)}
                 style={{
-                  padding: '0.6rem 1.4rem',
+                  padding: '0.65rem 1.45rem',
                   fontSize: '0.86rem',
                   fontWeight: isSelected ? 600 : 500,
                   borderRadius: 'var(--radius-pill)',
@@ -80,7 +101,7 @@ export default function Releases() {
           })}
         </div>
 
-        {/* Book Grid */}
+        {/* Book Grid with 3D Tilt Cards */}
         <div 
           style={{
             display: 'grid',
@@ -90,9 +111,9 @@ export default function Releases() {
           }}
         >
           {filteredBooks.map((book) => (
-            <article 
+            <InteractiveCard 
               key={book.id}
-              className="release-card"
+              className="catalog-book-card"
               style={{
                 backgroundColor: 'var(--paper-white)',
                 border: '1px solid var(--border-light)',
@@ -100,15 +121,7 @@ export default function Releases() {
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                transition: 'transform 0.25s ease, border-color 0.25s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.borderColor = 'var(--brand-blue-border)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.borderColor = 'var(--border-light)';
+                boxShadow: '0 4px 18px rgba(0,0,0,0.02)'
               }}
             >
               {/* Minimal Cover Simulation */}
@@ -217,7 +230,7 @@ export default function Releases() {
                   </button>
                 </div>
               </div>
-            </article>
+            </InteractiveCard>
           ))}
         </div>
 
@@ -240,7 +253,7 @@ export default function Releases() {
             margin: '0 auto'
           }}
         >
-          <h3 style={{ fontSize: '1.9rem', color: 'var(--ink-900)', marginBottom: '1rem' }}>
+          <h3 style={{ fontSize: '2rem', color: 'var(--ink-900)', marginBottom: '1rem' }}>
             Are you writing your next manuscript?
           </h3>
           <p style={{ color: 'var(--ink-500)', fontSize: '1.05rem', marginBottom: '2rem' }}>

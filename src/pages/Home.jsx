@@ -1,20 +1,88 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ArrowRight, BookOpen, Feather, ShieldCheck, Compass } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, BookOpen, Feather, ShieldCheck, Compass, Sparkles } from 'lucide-react';
 import { SERVICES_DATA } from '../data/services';
 import { RELEASES_DATA } from '../data/releases';
+import AnimatedText from '../components/AnimatedText';
+import InkStrokeLine from '../components/InkStrokeLine';
+import InteractiveCard from '../components/InteractiveCard';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const containerRef = useRef(null);
+  const dividerRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.reveal-item',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out' }
+      // Animate badge, subtitle, and CTA buttons in sequence
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      tl.fromTo('.hero-badge', 
+        { opacity: 0, y: 15 }, 
+        { opacity: 1, y: 0, duration: 0.6 }
+      )
+      .fromTo('.hero-desc', 
+        { opacity: 0, y: 25 }, 
+        { opacity: 1, y: 0, duration: 0.8 }, 
+        "-=0.2"
+      )
+      .fromTo('.hero-actions', 
+        { opacity: 0, y: 20 }, 
+        { opacity: 1, y: 0, duration: 0.6 }, 
+        "-=0.4"
       );
+
+      // ScrollTrigger line expansion
+      if (dividerRef.current) {
+        gsap.fromTo(dividerRef.current,
+          { scaleX: 0, transformOrigin: 'left center' },
+          {
+            scaleX: 1,
+            duration: 1.2,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: dividerRef.current,
+              start: 'top 90%',
+            }
+          }
+        );
+      }
+
+      // Staggered scroll trigger for principles cards
+      gsap.fromTo('.principle-item',
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.principles-container',
+            start: 'top 80%',
+          }
+        }
+      );
+
+      // Staggered scroll trigger for service teaser cards
+      gsap.fromTo('.teaser-card',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.1,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.teasers-grid',
+            start: 'top 80%',
+          }
+        }
+      );
+
     }, containerRef);
 
     return () => ctx.revert();
@@ -27,30 +95,39 @@ export default function Home() {
       <div className="container">
         
         {/* Minimal Hero Header */}
-        <div style={{ maxWidth: '900px', marginBottom: '5rem' }}>
+        <div style={{ maxWidth: '920px', marginBottom: '5rem' }}>
           
-          <div className="reveal-item" style={{ marginBottom: '1.5rem' }}>
+          <div className="hero-badge" style={{ marginBottom: '1.75rem' }}>
             <span className="badge-tag">
               <span className="dot"></span>
-              Penciled Scripture Limited • Publishing Company
+              Penciled Scripture Limited • Literary & Academic Imprint
             </span>
           </div>
 
-          <h1 
-            className="reveal-item"
-            style={{
-              fontSize: 'clamp(2.8rem, 5.5vw, 4.4rem)',
-              lineHeight: 1.1,
-              color: 'var(--ink-900)',
-              marginBottom: '2rem',
-              letterSpacing: '-0.03em'
-            }}
-          >
-            Where thoughtful words become <span style={{ color: 'var(--brand-blue)', fontStyle: 'italic', fontWeight: 400 }}>enduring books.</span>
-          </h1>
+          {/* Masked Editorial Headline */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <AnimatedText 
+              as="h1"
+              duration={1.1}
+              stagger={0.12}
+              style={{
+                fontSize: 'clamp(2.8rem, 5.8vw, 4.6rem)',
+                lineHeight: 1.08,
+                color: 'var(--ink-900)',
+                letterSpacing: '-0.035em'
+              }}
+            >
+              {"Where thoughtful words\nbecome enduring books."}
+            </AnimatedText>
+          </div>
+
+          {/* Animated Calligraphic Pen Line */}
+          <div style={{ width: '260px', marginBottom: '2.5rem' }}>
+            <InkStrokeLine delay={0.6} />
+          </div>
 
           <p 
-            className="reveal-item"
+            className="hero-desc"
             style={{
               fontSize: 'clamp(1.15rem, 2vw, 1.35rem)',
               color: 'var(--ink-500)',
@@ -62,9 +139,9 @@ export default function Home() {
             We are an independent literary publishing house dedicated to developmental editing, exquisite book design, and worldwide print and digital distribution.
           </p>
 
-          <div className="reveal-item" style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem' }}>
+          <div className="hero-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem' }}>
             <Link to="/services" className="btn btn-primary" style={{ padding: '1rem 2.2rem' }}>
-              <span>Our Services</span>
+              <span>Explore Our 8 Services</span>
               <ArrowRight size={16} />
             </Link>
 
@@ -75,69 +152,105 @@ export default function Home() {
 
         </div>
 
-        {/* Minimalist Divider */}
-        <hr className="hairline" style={{ marginBottom: '5rem' }} />
-
-        {/* 3 Core Editorial Principles */}
+        {/* Animated Hairline Divider */}
         <div 
+          ref={dividerRef}
+          style={{ 
+            height: '1px', 
+            backgroundColor: 'var(--border-light)', 
+            width: '100%', 
+            marginBottom: '5rem' 
+          }} 
+        />
+
+        {/* 3 Core Editorial Principles with 3D Tilt Cards */}
+        <div 
+          className="principles-container"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '3rem',
+            gap: '2.5rem',
             marginBottom: '6rem'
           }}
         >
-          <div className="reveal-item">
-            <div style={{ color: 'var(--brand-blue)', marginBottom: '1rem' }}>
-              <Feather size={26} />
+          <InteractiveCard 
+            className="principle-item"
+            style={{
+              padding: '2.25rem',
+              backgroundColor: 'var(--paper-cream)',
+              border: '1px solid var(--border-light)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.02)'
+            }}
+          >
+            <div style={{ color: 'var(--brand-blue)', marginBottom: '1.25rem' }}>
+              <Feather size={28} />
             </div>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.6rem', color: 'var(--ink-900)' }}>
+            <h3 style={{ fontSize: '1.3rem', marginBottom: '0.65rem', color: 'var(--ink-900)' }}>
               Editorial Rigor
             </h3>
             <p style={{ fontSize: '0.96rem', color: 'var(--ink-500)', lineHeight: '1.7' }}>
               Every manuscript undergoes in-depth developmental, structural, and line editing to ensure clarity and narrative authority.
             </p>
-          </div>
+          </InteractiveCard>
 
-          <div className="reveal-item">
-            <div style={{ color: 'var(--brand-blue)', marginBottom: '1rem' }}>
-              <ShieldCheck size={26} />
+          <InteractiveCard 
+            className="principle-item"
+            style={{
+              padding: '2.25rem',
+              backgroundColor: 'var(--paper-cream)',
+              border: '1px solid var(--border-light)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.02)'
+            }}
+          >
+            <div style={{ color: 'var(--brand-blue)', marginBottom: '1.25rem' }}>
+              <ShieldCheck size={28} />
             </div>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.6rem', color: 'var(--ink-900)' }}>
+            <h3 style={{ fontSize: '1.3rem', marginBottom: '0.65rem', color: 'var(--ink-900)' }}>
               Author Sovereignty
             </h3>
             <p style={{ fontSize: '0.96rem', color: 'var(--ink-500)', lineHeight: '1.7' }}>
               You retain 100% of your copyright, creative ownership, and royalty earnings without restrictive lock-ins.
             </p>
-          </div>
+          </InteractiveCard>
 
-          <div className="reveal-item">
-            <div style={{ color: 'var(--brand-blue)', marginBottom: '1rem' }}>
-              <Compass size={26} />
+          <InteractiveCard 
+            className="principle-item"
+            style={{
+              padding: '2.25rem',
+              backgroundColor: 'var(--paper-cream)',
+              border: '1px solid var(--border-light)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.02)'
+            }}
+          >
+            <div style={{ color: 'var(--brand-blue)', marginBottom: '1.25rem' }}>
+              <Compass size={28} />
             </div>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.6rem', color: 'var(--ink-900)' }}>
+            <h3 style={{ fontSize: '1.3rem', marginBottom: '0.65rem', color: 'var(--ink-900)' }}>
               Global Reach
             </h3>
             <p style={{ fontSize: '0.96rem', color: 'var(--ink-500)', lineHeight: '1.7' }}>
               Comprehensive worldwide catalog listing across Amazon Kindle, Apple Books, IngramSpark, Barnes & Noble, and international libraries.
             </p>
-          </div>
+          </InteractiveCard>
         </div>
 
-        {/* Highlighted Services Preview (Uncluttered) */}
+        {/* Highlighted Services Preview (Uncluttered & Interactive) */}
         <div 
           style={{
             backgroundColor: 'var(--paper-cream)',
             border: '1px solid var(--border-light)',
             borderRadius: 'var(--radius-md)',
-            padding: '3.5rem 3rem',
+            padding: '4rem 3rem',
             marginBottom: '6rem'
           }}
         >
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '1.5rem', marginBottom: '2.5rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '1.5rem', marginBottom: '3rem' }}>
             <div>
-              <span className="badge-tag" style={{ marginBottom: '0.75rem' }}>Our Capabilities</span>
-              <h2 style={{ fontSize: '2rem', color: 'var(--ink-900)' }}>
+              <span className="badge-tag" style={{ marginBottom: '0.75rem' }}>Publishing Capabilities</span>
+              <h2 style={{ fontSize: '2.2rem', color: 'var(--ink-900)' }}>
                 Full-Spectrum Publishing Services
               </h2>
             </div>
@@ -147,14 +260,15 @@ export default function Home() {
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+          <div className="teasers-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.75rem' }}>
             {SERVICES_DATA.slice(0, 4).map((srv) => (
-              <div 
+              <InteractiveCard 
                 key={srv.id}
+                className="teaser-card"
                 style={{
                   backgroundColor: 'var(--paper-white)',
                   border: '1px solid var(--border-light)',
-                  padding: '1.75rem',
+                  padding: '2rem 1.75rem',
                   borderRadius: 'var(--radius-sm)',
                   display: 'flex',
                   flexDirection: 'column',
@@ -162,37 +276,37 @@ export default function Home() {
                 }}
               >
                 <div>
-                  <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--brand-blue)', display: 'block', marginBottom: '0.5rem' }}>
+                  <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--brand-blue)', display: 'block', marginBottom: '0.75rem' }}>
                     {srv.number}
                   </span>
-                  <h4 style={{ fontSize: '1.05rem', color: 'var(--ink-900)', marginBottom: '0.5rem', fontFamily: 'var(--font-sans)', fontWeight: 600 }}>
+                  <h4 style={{ fontSize: '1.08rem', color: 'var(--ink-900)', marginBottom: '0.5rem', fontFamily: 'var(--font-sans)', fontWeight: 600 }}>
                     {srv.title}
                   </h4>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--ink-500)', lineHeight: '1.6' }}>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--ink-500)', lineHeight: '1.65' }}>
                     {srv.shortDesc}
                   </p>
                 </div>
-              </div>
+              </InteractiveCard>
             ))}
           </div>
         </div>
 
-        {/* Featured Release Teaser */}
+        {/* Featured Release Teaser with Interactive 3D Card */}
         <div 
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '3.5rem',
+            gap: '4rem',
             alignItems: 'center',
             marginBottom: '6rem'
           }}
         >
           <div>
-            <span className="badge-tag" style={{ marginBottom: '1rem' }}>From Our Catalog</span>
-            <h2 style={{ fontSize: '2.2rem', color: 'var(--ink-900)', marginBottom: '1rem' }}>
-              Latest Imprint Release
+            <span className="badge-tag" style={{ marginBottom: '1rem' }}>From Our Imprint</span>
+            <h2 style={{ fontSize: '2.4rem', color: 'var(--ink-900)', marginBottom: '1rem', lineHeight: '1.15' }}>
+              Featured Imprint Title
             </h2>
-            <p style={{ fontSize: '1.05rem', color: 'var(--ink-500)', lineHeight: '1.75', marginBottom: '1.75rem' }}>
+            <p style={{ fontSize: '1.05rem', color: 'var(--ink-500)', lineHeight: '1.8', marginBottom: '2rem' }}>
               Discover our newest published works across literary fiction, faith, and philosophy, meticulously bound and formatted for discerning readers.
             </p>
             <Link to="/releases" className="btn btn-secondary">
@@ -201,36 +315,37 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Minimalist Book Preview Card */}
-          <div 
+          {/* Interactive Minimalist Book Card */}
+          <InteractiveCard 
             style={{
               backgroundColor: 'var(--paper-cream)',
               border: '1px solid var(--border-light)',
               borderRadius: 'var(--radius-md)',
-              padding: '2.5rem',
+              padding: '2.75rem',
               display: 'flex',
               flexDirection: 'column',
-              gap: '1rem'
+              gap: '1rem',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.03)'
             }}
           >
             <span style={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--brand-blue)', fontWeight: 700 }}>
               {featuredBook.genre} • {featuredBook.year}
             </span>
-            <h3 style={{ fontSize: '1.6rem', color: 'var(--ink-900)', fontFamily: 'var(--font-serif)' }}>
+            <h3 style={{ fontSize: '1.75rem', color: 'var(--ink-900)', fontFamily: 'var(--font-serif)', lineHeight: '1.2' }}>
               {featuredBook.title}
             </h3>
-            <div style={{ fontSize: '0.95rem', color: 'var(--ink-500)', fontWeight: 500 }}>
+            <div style={{ fontSize: '0.98rem', color: 'var(--ink-500)', fontWeight: 500 }}>
               By {featuredBook.author}
             </div>
-            <p style={{ fontSize: '0.92rem', color: 'var(--ink-700)', lineHeight: '1.65' }}>
+            <p style={{ fontSize: '0.94rem', color: 'var(--ink-700)', lineHeight: '1.7' }}>
               "{featuredBook.synopsis}"
             </p>
-            <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '1rem', marginTop: '0.5rem' }}>
-              <Link to="/releases" style={{ fontSize: '0.88rem', color: 'var(--brand-blue)', fontWeight: 600 }}>
+            <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '1.25rem', marginTop: '0.5rem' }}>
+              <Link to="/releases" style={{ fontSize: '0.9rem', color: 'var(--brand-blue)', fontWeight: 600 }}>
                 Read full synopsis in catalog →
               </Link>
             </div>
-          </div>
+          </InteractiveCard>
         </div>
 
         {/* Bottom Uncluttered Callout */}
@@ -239,17 +354,17 @@ export default function Home() {
             textAlign: 'center',
             maxWidth: '680px',
             margin: '0 auto',
-            padding: '4rem 1.5rem',
+            padding: '4.5rem 1.5rem',
             borderTop: '1px solid var(--border-light)'
           }}
         >
-          <h2 style={{ fontSize: '2rem', color: 'var(--ink-900)', marginBottom: '1rem' }}>
+          <h2 style={{ fontSize: '2.2rem', color: 'var(--ink-900)', marginBottom: '1rem' }}>
             Ready to bring your manuscript to life?
           </h2>
-          <p style={{ fontSize: '1.05rem', color: 'var(--ink-500)', marginBottom: '2rem' }}>
+          <p style={{ fontSize: '1.08rem', color: 'var(--ink-500)', marginBottom: '2.25rem', lineHeight: '1.7' }}>
             Our editorial committee is currently open to inquiries and new manuscript submissions.
           </p>
-          <Link to="/contact" className="btn btn-primary" style={{ padding: '0.95rem 2.2rem' }}>
+          <Link to="/contact" className="btn btn-primary" style={{ padding: '1rem 2.4rem' }}>
             <span>Submit Your Manuscript</span>
             <ArrowUpRight size={16} />
           </Link>

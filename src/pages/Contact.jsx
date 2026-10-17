@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Mail, Phone, Clock, Send, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { SERVICES_DATA } from '../data/services';
+import AnimatedText from '../components/AnimatedText';
+import InkStrokeLine from '../components/InkStrokeLine';
+import InteractiveCard from '../components/InteractiveCard';
 import gsap from 'gsap';
 
 export default function Contact() {
@@ -37,9 +40,9 @@ export default function Contact() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        '.contact-reveal',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out' }
+        '.contact-fade',
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out' }
       );
     }, pageRef);
 
@@ -74,14 +77,29 @@ export default function Contact() {
       <div className="container">
         
         {/* Page Intro Header */}
-        <div className="page-intro contact-reveal">
+        <div className="page-intro">
           <div className="page-eyebrow">
             <Mail size={14} />
             <span>Manuscript Inquiries & Submissions</span>
           </div>
-          <h1 className="page-title">
-            Contact Our Editorial Bureau
-          </h1>
+
+          <AnimatedText
+            as="h1"
+            duration={1.0}
+            style={{
+              fontSize: 'clamp(2.6rem, 4.5vw, 3.8rem)',
+              color: 'var(--ink-900)',
+              marginBottom: '1rem',
+              lineHeight: 1.12
+            }}
+          >
+            {"Contact Our\nEditorial Bureau"}
+          </AnimatedText>
+
+          <div style={{ width: '220px', marginBottom: '1.75rem' }}>
+            <InkStrokeLine delay={0.5} />
+          </div>
+
           <p className="page-description">
             Submit your manuscript details or inquire about our comprehensive publishing services. Our reading board reviews submissions on a rolling basis.
           </p>
@@ -97,22 +115,23 @@ export default function Contact() {
           }}
         >
           {/* Left Column: Direct Imprint Details */}
-          <div className="contact-reveal">
-            <h2 style={{ fontSize: '1.8rem', color: 'var(--ink-900)', marginBottom: '1.25rem' }}>
+          <div>
+            <h2 className="contact-fade" style={{ fontSize: '1.85rem', color: 'var(--ink-900)', marginBottom: '1.25rem' }}>
               Publishing House Office
             </h2>
-            <p style={{ fontSize: '1.02rem', color: 'var(--ink-700)', lineHeight: '1.8', marginBottom: '2.5rem' }}>
+            <p className="contact-fade" style={{ fontSize: '1.02rem', color: 'var(--ink-700)', lineHeight: '1.8', marginBottom: '2.5rem' }}>
               We welcome submissions from established authors, debut writers, scholars, and institutions. Every transmission is held under strict editorial confidentiality.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '3rem' }}>
               
-              <div 
+              <InteractiveCard 
+                className="contact-fade"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '1.25rem',
-                  padding: '1.5rem',
+                  padding: '1.65rem',
                   backgroundColor: 'var(--paper-cream)',
                   border: '1px solid var(--border-light)',
                   borderRadius: 'var(--radius-sm)'
@@ -132,14 +151,15 @@ export default function Contact() {
                     submissions@penciledscripture.com
                   </a>
                 </div>
-              </div>
+              </InteractiveCard>
 
-              <div 
+              <InteractiveCard 
+                className="contact-fade"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '1.25rem',
-                  padding: '1.5rem',
+                  padding: '1.65rem',
                   backgroundColor: 'var(--paper-cream)',
                   border: '1px solid var(--border-light)',
                   borderRadius: 'var(--radius-sm)'
@@ -159,14 +179,15 @@ export default function Contact() {
                     +234 (0) 800 PENCILED
                   </a>
                 </div>
-              </div>
+              </InteractiveCard>
 
-              <div 
+              <InteractiveCard 
+                className="contact-fade"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '1.25rem',
-                  padding: '1.5rem',
+                  padding: '1.65rem',
                   backgroundColor: 'var(--paper-cream)',
                   border: '1px solid var(--border-light)',
                   borderRadius: 'var(--radius-sm)'
@@ -183,27 +204,28 @@ export default function Contact() {
                     Monday – Friday: 9:00 AM – 6:00 PM (GMT+1)
                   </div>
                 </div>
-              </div>
+              </InteractiveCard>
 
             </div>
 
             {/* Author Guarantee Note */}
             <div 
+              className="contact-fade"
               style={{
                 padding: '1.75rem',
                 backgroundColor: 'var(--brand-blue-subtle)',
                 border: '1px solid var(--brand-blue-border)',
                 borderRadius: 'var(--radius-sm)',
                 display: 'flex',
-                gap: '1rem'
+                gap: '1.25rem'
               }}
             >
-              <ShieldCheck size={26} style={{ color: 'var(--brand-blue)', flexShrink: 0 }} />
+              <ShieldCheck size={28} style={{ color: 'var(--brand-blue)', flexShrink: 0 }} />
               <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--ink-900)', marginBottom: '0.3rem' }}>
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink-900)', marginBottom: '0.35rem' }}>
                   Copyright Protection Guarantee
                 </h4>
-                <p style={{ fontSize: '0.88rem', color: 'var(--ink-700)', lineHeight: '1.6' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--ink-700)', lineHeight: '1.6' }}>
                   All synopses, outlines, and manuscripts submitted remain your sole intellectual property. We sign mutual NDAs for all comprehensive evaluations upon request.
                 </p>
               </div>
@@ -213,13 +235,13 @@ export default function Contact() {
 
           {/* Right Column: Submission Form */}
           <div 
-            className="contact-reveal"
+            className="contact-fade"
             style={{
               backgroundColor: 'var(--paper-cream)',
               border: '1px solid var(--border-light)',
               borderRadius: 'var(--radius-md)',
               padding: '3rem 2.5rem',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+              boxShadow: '0 8px 30px rgba(0,0,0,0.03)'
             }}
           >
             {submitted ? (
@@ -267,7 +289,7 @@ export default function Contact() {
             ) : (
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 
-                <h3 style={{ fontSize: '1.5rem', color: 'var(--ink-900)', marginBottom: '0.5rem' }}>
+                <h3 style={{ fontSize: '1.55rem', color: 'var(--ink-900)', marginBottom: '0.5rem' }}>
                   Manuscript & Consultation Form
                 </h3>
 

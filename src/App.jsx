@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import CustomCursor from './components/CustomCursor';
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -22,13 +23,13 @@ export default function App() {
   // Initialize Lenis smooth scrolling across the entire multi-page application
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 1.05,
+      touchMultiplier: 1.2,
     });
 
     lenisRef.current = lenis;
@@ -51,7 +52,7 @@ export default function App() {
 
   const handleScrollTop = () => {
     if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { duration: 1.0 });
+      lenisRef.current.scrollTo(0, { duration: 1.2 });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -59,6 +60,9 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      {/* Precision Trailing Custom Cursor for Desktop */}
+      <CustomCursor />
+
       {/* Scroll restoration on page route change */}
       <ScrollToTop lenis={lenisRef.current} />
 
